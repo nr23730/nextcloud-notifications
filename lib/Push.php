@@ -527,6 +527,17 @@ class Push {
 				} else {
 					$this->printInfo('Push notification sent successfully');
 				}
+                        } elseif (is_array($bodyData) && array_key_exists('success', $bodyData)) {
+                                if ($bodyData['success'] == true) {
+                                        $this->printInfo('Push notification sent successfully to UnifiedPush server');
+                                } else {
+                                        $this->printInfo('Push notification sent, but was not successful');
+                                        $this->log->info('Push notification sent, but was not successful ', [
+                                                'error' => $bodyData,
+                                                'url' => $proxyServer,
+                                                'app' => 'notifications',
+                                        ]);
+                                }
 			} elseif ($status !== Http::STATUS_OK) {
 				$error = $body && $bodyData === null ? $body : 'no reason given';
 				$this->printInfo('Could not send notification to push server [' . $proxyServer . ']: ' . $error);
